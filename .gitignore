@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# Env
+.env
+
+# Database
+data/finance.db
+*.sqlite3
+
+# Streamlit
+.streamlit/
+
+# OS
+.DS_Store
+
+# Notebooks
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
