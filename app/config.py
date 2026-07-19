@@ -4,6 +4,11 @@ App-wide configuration, loaded from environment variables (.env).
 
 import os
 from dotenv import load_dotenv
+try:
+    import streamlit as st
+    secrets = st.secrets
+except Exception:
+    secrets = {}
 
 load_dotenv()
 
