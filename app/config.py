@@ -50,9 +50,4 @@ class Settings:
 
 settings = Settings()
 
-# ---- Temporary Debug (remove after testing) ----
-print("===================================")
-print("LLM Provider :", settings.LLM_PROVIDER)
-print("Groq Key     :", bool(settings.GROQ_API_KEY))
-print("Groq Model   :", settings.GROQ_MODEL)
-print("===================================")
+
