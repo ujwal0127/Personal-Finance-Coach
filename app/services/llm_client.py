@@ -79,7 +79,7 @@ class LLMClient:
 
             except Exception as e:
                 logger.exception(e)
-                self.provider = "mock"
+                raise
 
         # --------------------------------------------------------
         # Mock
