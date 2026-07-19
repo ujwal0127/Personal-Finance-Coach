@@ -16,25 +16,92 @@ import streamlit as st
 from app.ui.pages import dashboard, income, expenses, investment, goals
 from app.ui.common import init_session_state
 
-st.set_page_config(page_title="Personal Finance Coach", page_icon="💰", layout="wide")
+# -------------------------------------------------------
+# Page Configuration
+# -------------------------------------------------------
+st.set_page_config(
+    page_title="Personal Finance Coach",
+    page_icon="💰",
+    layout="wide",
+)
+
 init_session_state()
 
+# -------------------------------------------------------
+# Navigation Pages
+# -------------------------------------------------------
 pages = [
-    st.Page(dashboard.render, title="Dashboard", icon="🏠", url_path="dashboard", default=True),
-    st.Page(income.render, title="Income", icon="💵", url_path="income"),
-    st.Page(expenses.render, title="Expenses", icon="💳", url_path="expenses"),
-    st.Page(investment.render, title="Investment", icon="📈", url_path="investment"),
-    st.Page(goals.render, title="Goals", icon="🎯", url_path="goals"),
+    st.Page(
+        dashboard.render,
+        title="Dashboard",
+        icon="🏠",
+        url_path="dashboard",
+        default=True,
+    ),
+    st.Page(
+        income.render,
+        title="Income",
+        icon="💵",
+        url_path="income",
+    ),
+    st.Page(
+        expenses.render,
+        title="Expenses",
+        icon="💳",
+        url_path="expenses",
+    ),
+    st.Page(
+        investment.render,
+        title="Investment",
+        icon="📈",
+        url_path="investment",
+    ),
+    st.Page(
+        goals.render,
+        title="Goals",
+        icon="🎯",
+        url_path="goals",
+    ),
 ]
 
 nav = st.navigation(pages)
 
+# -------------------------------------------------------
+# Sidebar
+# -------------------------------------------------------
 with st.sidebar:
+
     st.markdown("### 🕘 Report History")
+
     if st.session_state.history:
         for h in reversed(st.session_state.history[-5:]):
-            st.caption(f"{h['date'].strftime('%b %d, %Y %H:%M')} — Score {h['score']}/100")
+            st.caption(
+                f"{h['date'].strftime('%b %d, %Y %H:%M')} • Score {h['score']}/100"
+            )
     else:
-        st.caption("Generate a report on the Dashboard page to see history here.")
+        st.caption(
+            "Generate a report on the Dashboard page to see your history."
+        )
 
+    st.markdown("---")
+
+    # -----------------------------
+    # Reset Button
+    # -----------------------------
+    if st.button(
+        "🗑️ Reset All Data",
+        use_container_width=True,
+        type="secondary",
+    ):
+        st.session_state.report = None
+        st.session_state.history = []
+        st.session_state.chat_messages = []
+
+        st.success("All session data has been cleared!")
+
+        st.rerun()
+
+# -------------------------------------------------------
+# Run Selected Page
+# -------------------------------------------------------
 nav.run()

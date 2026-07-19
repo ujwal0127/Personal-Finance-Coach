@@ -34,12 +34,25 @@ class ExpenseAgent:
         )
         potential = savings_potential(income, total_expenses)
 
-        prompt = (
-            f"User {data.name} spends {total_expenses:.2f} per month. "
-            f"Largest category: {largest_category} ({largest_amount:.2f}). "
-            f"Breakdown: {breakdown}. Estimated savings potential: {potential:.2f}. "
-            f"Summarize spending behavior and one area to cut back, in 1-2 sentences."
-        )
+        prompt = f"""
+            You are a personal finance advisor for users in India.
+
+            All monetary values are in Indian Rupees (INR).
+            Never use the dollar ($) symbol.
+            Always use the ₹ symbol when mentioning money.
+
+            User: {data.name}
+
+            Total Monthly Expenses: ₹{total_expenses:,.2f}
+            Largest Expense Category: {largest_category} (₹{largest_amount:,.2f})
+
+            Expense Breakdown:
+            {breakdown}
+
+            Estimated Monthly Savings Potential: ₹{potential:,.2f}
+
+            Write a professional summary in 1–2 sentences describing the user's spending habits and suggest one area where they can reduce expenses.
+            """
         summary = llm_client.complete(prompt)
 
         return ExpenseAnalysis(

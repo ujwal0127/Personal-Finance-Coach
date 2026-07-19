@@ -33,9 +33,12 @@ class IncomeAgent:
         }
 
         prompt = (
-            f"User {data.name} has a total monthly income of {income:.2f}, "
-            f"with {stable:.2f} stable and {variable:.2f} variable. "
-            f"Breakdown: {breakdown}. Summarize this income situation in 1-2 sentences."
+            f"User {data.name} has a total monthly income of ₹{income:,.2f} INR, "
+            f"with ₹{stable:,.2f} stable income and ₹{variable:,.2f} variable income. "
+            f"Income breakdown (all values in Indian Rupees): {breakdown}. "
+            "Summarize this income situation in 1-2 sentences. "
+            "IMPORTANT: All monetary values are in Indian Rupees (INR). "
+            "Always use the ₹ symbol instead of the $ symbol in your response."
         )
         summary = llm_client.complete(prompt)
 

@@ -65,13 +65,23 @@ class SupervisorAgent:
         )
 
         # 5. Final LLM-generated overall summary (resolves/synthesizes agent outputs)
-        prompt = (
-            f"Write a concise overall financial summary for {data.name}. "
-            f"Monthly income: {income.total_monthly_income:.2f}, "
-            f"expenses: {expenses.total_monthly_expenses:.2f}, "
-            f"net savings: {net_savings:.2f}, health score: {health_score}/100. "
-            f"Keep it to 2-3 encouraging but honest sentences."
-        )
+        prompt = f"""
+            You are a personal finance advisor for users in India.
+
+            All monetary values are in Indian Rupees (INR).
+            Never use the dollar ($) symbol.
+            Always use the ₹ symbol when mentioning money.
+
+            User: {data.name}
+
+            Monthly Income: ₹{income.total_monthly_income:,.2f}
+            Monthly Expenses: ₹{expenses.total_monthly_expenses:,.2f}
+            Net Monthly Savings: ₹{net_savings:,.2f}
+            Financial Health Score: {health_score}/100
+
+            Write a concise overall financial summary in 2–3 encouraging but honest sentences.
+            Mention all monetary values using the ₹ symbol only.
+            """
         overall_summary = llm_client.complete(prompt)
 
         return FinancialReport(

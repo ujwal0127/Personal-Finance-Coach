@@ -9,14 +9,29 @@ load_dotenv()
 
 
 class Settings:
-    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
-    GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY", "")
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+    GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "")
 
-    # "openai" | "gemini" | "mock"
-    LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "mock").lower()
+    GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+    GROQ_MODEL = os.getenv(
+        "GROQ_MODEL",
+        "llama-3.3-70b-versatile"
+    )
 
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///data/finance.db")
-    LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
+    LLM_PROVIDER = os.getenv(
+        "LLM_PROVIDER",
+        "mock"
+    ).lower()
+
+    DATABASE_URL = os.getenv(
+        "DATABASE_URL",
+        "sqlite:///data/finance.db"
+    )
+
+    LOG_LEVEL = os.getenv(
+        "LOG_LEVEL",
+        "INFO"
+    )
 
 
 settings = Settings()

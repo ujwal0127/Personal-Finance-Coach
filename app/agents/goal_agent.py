@@ -25,14 +25,26 @@ class GoalAgent:
         est_months = months_to_goal(remaining, monthly_investable)
         needed = monthly_savings_needed(remaining, data.goal_target_months)
 
-        prompt = (
-            f"User {data.name} is saving for '{data.goal_name}', target "
-            f"{data.goal_target_amount:.2f}, currently at {current:.2f} "
-            f"({completion_pct:.1f}% complete). Remaining: {remaining:.2f}. "
-            f"At current investable rate of {monthly_investable:.2f}/month, "
-            f"estimated months to complete: {est_months}. "
-            f"Summarize progress and encouragement in 1-2 sentences."
-        )
+        prompt = f"""
+            You are a personal finance advisor for users in India.
+
+            All monetary values are in Indian Rupees (INR).
+            Never use the dollar ($) symbol.
+            Always use the ₹ symbol when mentioning money.
+
+            User: {data.name}
+
+            Financial Goal: {data.goal_name}
+
+            Target Amount: ₹{data.goal_target_amount:,.2f}
+            Current Savings: ₹{current:,.2f}
+            Goal Completion: {completion_pct:.1f}%
+            Remaining Amount: ₹{remaining:,.2f}
+            Monthly Investable Amount: ₹{monthly_investable:,.2f}
+            Estimated Time to Reach Goal: {est_months} months
+
+            Write a motivating and professional summary in 1–2 sentences about the user's progress and encourage them to continue saving. Always display monetary values using ₹.
+            """
         summary = llm_client.complete(prompt)
 
         return GoalStatus(

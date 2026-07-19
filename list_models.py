@@ -1,10 +1,14 @@
-from google import genai
+from groq import Groq
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
+client = Groq(
+    api_key=os.getenv("GROQ_API_KEY")
+)
 
-for model in client.models.list():
-    print(model.name)
+models = client.models.list()
+
+for model in models.data:
+    print(model.id)

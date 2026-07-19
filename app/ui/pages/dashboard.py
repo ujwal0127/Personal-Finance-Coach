@@ -2,10 +2,12 @@
 
 import streamlit as st
 import plotly.graph_objects as go
+import time
 
 from app.models.schemas import UserFinancialInput
 from app.services.report_generator import generate_report
 from app.services.financial_health import score_label, score_color
+from app.utils.pdf_export import generate_pdf
 from app.ui.common import (
     PALETTE, inject_css, money, pct_delta, metric_card,
     init_session_state, load_history, render_side_panel,
@@ -108,37 +110,67 @@ def render():
             goal_target_months=goal_months if goal_months > 0 else None,
         )
 
-        status = st.status("🚀 Generating your financial report...", expanded=True)
+        status = st.status(
+            "🚀 Generating Your Financial Report...",
+            expanded=True,
+        )
+
+        progress = st.progress(0)
 
         try:
-            status.write("📊 Collecting your financial information...")
-            status.write("💰 Analyzing income...")
-            status.write("💳 Analyzing expenses...")
-            status.write("📈 Generating investment suggestions...")
-            status.write("🎯 Evaluating financial goals...")
-            status.write("🤖 Running AI agents...")
 
-            report = generate_report(user_input, persist=True)
+            progress.progress(10)
+            status.write("📋 Collecting your financial information...")
+            time.sleep(0.15)
+
+            progress.progress(25)
+            status.write("💰 Income Agent analyzing salary and income...")
+            time.sleep(0.15)
+
+            progress.progress(45)
+            status.write("💳 Expense Agent analyzing spending...")
+            time.sleep(0.15)
+
+            progress.progress(65)
+            status.write("📈 Investment Agent preparing recommendations...")
+            time.sleep(0.15)
+
+            progress.progress(80)
+            status.write("🎯 Goal Agent evaluating your financial goals...")
+            time.sleep(0.15)
+
+            progress.progress(90)
+            status.write("🤖 Supervisor Agent combining all reports...")
+
+            report = generate_report(
+                user_input,
+                persist=True,
+            )
+
+            progress.progress(100)
+            time.sleep(0.4)
+            progress.empty()
 
             status.update(
-                label="✅ Financial report generated successfully!",
+                label="✅ Financial Report Generated Successfully!",
                 state="complete",
                 expanded=False,
             )
 
         except Exception as e:
+
             status.update(
-                label="❌ Report generation failed",
+                label="❌ Report Generation Failed",
                 state="error",
             )
+
             st.error(f"Could not generate report: {e}")
             st.stop()
-
         st.session_state.report = report
         st.session_state.history = load_history(name, age)
         st.session_state.chat_messages = []
 
-        st.success("🎉 Your report is ready!")
+        st.toast("🎉 Financial Report Ready!", icon="✅")
 
     report = st.session_state.report
     if report is None:
@@ -151,7 +183,6 @@ def render():
     breakdown = report.expenses.expense_breakdown
     goal_summary = report.goal.summary if report.goal else "Set a goal in the form above to get tailored tracking."
 
-    st.success("Report generated!")
 
     dash_col, side_col = st.columns([3, 1])
 
@@ -249,6 +280,8 @@ def render():
                     unsafe_allow_html=True,
                 )
 
+        st.divider()
+
         st.subheader("📋 Action Plan")
         for item in report.action_plan:
             st.markdown(f"- {item}")
@@ -257,6 +290,33 @@ def render():
             "For a deeper dive, use the **Income**, **Expenses**, **Investment**, and "
             "**Goals** pages in the sidebar."
         )
+        # -------------------------------------------------------
+        # Export Financial Report
+        # -------------------------------------------------------
+
+        st.markdown("---")
+        st.markdown("## 📥 Export Your Financial Report")
+        st.caption("Download your report as a professional PDF document.")
+
+        try:
+            pdf_data = generate_pdf(report)
+
+            st.download_button(
+                label="📄 Download PDF Report",
+                data=pdf_data,
+                file_name="Financial_Report.pdf",
+                mime="application/pdf",
+                use_container_width=True,
+            )
+
+            st.success("✅ PDF is ready to download!")
+
+            st.info(
+                "💡 Tip: Generate a report every month to track improvements in your financial health."
+            )
+
+        except Exception as e:
+            st.error(f"❌ Unable to generate PDF: {e}")
 
     with side_col:
         render_side_panel(report, goal_summary, key_prefix="dashboard")

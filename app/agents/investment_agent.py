@@ -48,13 +48,29 @@ class InvestmentAgent:
                 f"{emergency_fund_gap:.2f} remains to reach the target"
             )
 
-        prompt = (
-            f"User {data.name}, age {data.age}, risk tolerance {data.risk_tolerance}, "
-            f"experience {data.investment_experience}, has {investable:.2f} investable "
-            f"per month and needs an emergency fund of about {target_fund:.2f}. "
-            f"Suggested allocation: {allocation}. Note: {risk_note}. "
-            f"Summarize the investment strategy in 1-2 sentences."
-        )
+        prompt = f"""
+            You are a personal finance advisor for users in India.
+
+            All monetary values are in Indian Rupees (INR).
+            Never use the dollar ($) symbol.
+            Always use the ₹ symbol when mentioning money.
+
+            User: {data.name}
+            Age: {data.age}
+            Risk Tolerance: {data.risk_tolerance}
+            Investment Experience: {data.investment_experience}
+
+            Monthly Investable Amount: ₹{investable:,.2f}
+            Recommended Emergency Fund: ₹{target_fund:,.2f}
+
+            Suggested Investment Allocation:
+            {allocation}
+
+            Risk Note:
+            {risk_note}
+
+            Write a professional investment summary in 1–2 sentences. Explain whether the investment allocation is suitable for the user's risk profile and always display monetary values using the ₹ symbol.
+            """
         summary = llm_client.complete(prompt)
 
         return InvestmentRecommendation(
